@@ -1,0 +1,38 @@
+int analogPin = A0;
+int digitalPin = D0;
+int ledPin = D7;
+int sensorValue = 0;
+
+int signalPin = D2;
+ 
+void setup ()
+{
+  Serial.begin (9600);
+  
+  pinMode (analogPin, INPUT);
+  pinMode (ledPin, OUTPUT);
+  
+  pinMode (signalPin, INPUT);
+}
+ 
+void loop ()
+{
+  sensorValue = analogRead (analogPin);
+  Serial.println (sensorValue, DEC);
+
+  if(sensorValue > 200)
+  {
+    Particle.publish("sound detected", String(sensorValue), PRIVATE);
+    digitalWrite (ledPin, HIGH);
+    delay (1000);
+  }
+  Particle.publish("sound not detected", String(sensorValue), PRIVATE);
+  digitalWrite (ledPin, LOW);
+  delay (1000);
+  
+  if(digitalRead(signalPin)==HIGH)
+  {
+    Particle.publish("motion detected", String(sensorValue), PRIVATE);
+  }
+  Particle.publish("motion not detected", String(sensorValue), PRIVATE);
+}
